@@ -5,6 +5,7 @@ const cardsContainer = document.querySelector("[data-game-body]");
 const result = document.querySelector("[data-result]");
 const timer = document.querySelector("[data-timer]");
 const messes = document.querySelector("[data-messes]");
+const selectLevel = document.querySelector("[data-difficulty-level]");
 // Audio Objects
 const gameThemeAudio = new Audio("audio/game-themee.mp3");
 gameThemeAudio.loop = true;
@@ -15,22 +16,11 @@ let playEffects = true;
 const gameOverSound = new Audio("audio/game-over.mp3");
 const winGameSound = new Audio("audio/game-win.mp3");
 let playEndGameSound = true;
-reduceAudioVolume(
-  0.4,
-  gameThemeAudio,
-  gameOverSound,
-  winGameSound,
-  notCompairedSound
-);
-function reduceAudioVolume(volumeLvl, ...audioObjects) {
-  audioObjects.forEach((audio) => {
-    audio.volume = volumeLvl;
-  });
-}
-// needed Varibales
-let gameTime = 60; // seconds
-let duration = 1000;
 
+// Global Varibales
+let gameTime; // seconds
+let duration = 1000;
+let flipeDuration;
 // just to make the time counter a global to access it from Otherfunctions
 let timeCount = setInterval(() => {});
 
@@ -52,6 +42,7 @@ var gameRunning = false;
 function startGame() {
   gameRunning = true;
   enterName(document.querySelector(".name span"));
+  changeDifficulty(selectLevel.value);
   displayContent();
   countDown();
   finishGame();
@@ -69,6 +60,7 @@ function resetValues() {
   timer.children[1].textContent = "00";
   gameThemeAudio.pause();
   result.innerHTML = "";
+  document.querySelectorAll(".finish-game").forEach((e) => e.remove());
 }
 function randomAndDouble(array) {
   let StoreArray = array.slice();
@@ -154,25 +146,18 @@ function enterName(nameElement) {
 }
 // flipe all cards at the beggening of the game for 1 Second
 function flipeAll() {
-  [...cardsContainer.children].forEach((e) => {
-    e.classList.add("is-fliped");
-  });
+  let arrayOfCards = [...cardsContainer.children];
+  arrayOfCards.forEach((e) => e.classList.add("is-fliped"));
   setTimeout(() => {
-    [...cardsContainer.children].forEach((e) => {
-      e.classList.remove("is-fliped");
-    });
-  }, 2000);
+    arrayOfCards.forEach((e) => e.classList.remove("is-fliped"));
+  }, flipeDuration);
 }
 // timer count-down function and game-over function trigger
 function countDown() {
   var seconds = timer.children[1];
   var minutes = timer.children[0];
-  let minutesTime = gameTime / 60;
-  // to extract seconds from game Time // I hate Math (-_-)
-  seconds.textContent = Math.round(
-    (minutesTime - Math.floor(minutesTime)) * 60
-  );
-  minutes.textContent = Math.floor(minutesTime);
+  minutes.textContent = parseInt(gameTime / 60);
+  seconds.textContent = gameTime % 60;
   timeCount = setInterval(() => {
     seconds.textContent = parseInt(seconds.textContent) - 1;
     if (seconds.textContent <= 0) {
@@ -208,7 +193,7 @@ function winLose(win = true) {
   }
   </span>
   <span class="messes">
-  ${"You messed " + messes.textContent + " Times"}
+  ${"messed " + messes.textContent + " Times"}
   </span>
   </div>
 `;
@@ -287,7 +272,7 @@ function updateSoundState(objectElement) {
   updateLocalSounds();
 }
 
-// local Storage Area for sounds
+// local Storage Area
 
 function updateLocalSounds() {
   let localStorageSounds = {
@@ -297,27 +282,36 @@ function updateLocalSounds() {
   };
   localStorage.setItem("sounds-settings", JSON.stringify(localStorageSounds));
 }
-window.addEventListener("load", getDataPlus);
+window.addEventListener("load", getLocalData);
 
-function getDataPlus() {
-  let obj = JSON.parse(localStorage.getItem("sounds-settings"));
-  Object.entries(obj).forEach((value) => {
-    if (!value[1]) {
-      switch (value[0]) {
-        case "gameTheme":
-          playGameTheme = false;
-          sounds[0].classList.add("no-sound");
-          break;
-        case "effects":
-          playEffects = false;
-          sounds[1].classList.add("no-sound");
-          break;
-        case "gameEnds":
-          playEndGameSound = false;
-          sounds[2].classList.add("no-sound");
+function getLocalData() {
+  // sounds local storage
+  if (localStorage.getItem("sounds-settings")) {
+    let obj = JSON.parse(localStorage.getItem("sounds-settings"));
+    let entries = Object.entries(obj);
+    entries.forEach((value) => {
+      if (!value[1]) {
+        switch (value[0]) {
+          case "gameTheme":
+            playGameTheme = false;
+            sounds[0].classList.add("no-sound");
+            break;
+          case "effects":
+            playEffects = false;
+            sounds[1].classList.add("no-sound");
+            break;
+          case "gameEnds":
+            playEndGameSound = false;
+            sounds[2].classList.add("no-sound");
+        }
       }
-    }
-  });
+    });
+  }
+  // difficulty storages
+  if (localStorage.getItem("difficulty")) {
+    let difficult = JSON.parse(localStorage.getItem("difficulty"));
+    selectLevel.value = difficult;
+  }
 }
 
 // finish the game funcitinality
@@ -365,18 +359,23 @@ function displaySplashScreen(buttonText, coverThePage = true) {
 }
 
 // change defficulty function
+selectLevel.onchange = () => {
+  changeDifficulty(selectLevel.value);
+  localStorage.setItem("difficulty", JSON.stringify(selectLevel.value));
+};
 function changeDifficulty(difficulty) {
   switch (difficulty) {
     case "easy":
-      gameTime = 30;
+      gameTime = 100;
+      flipeDuration = 2000;
       break;
     case "medium":
-      gameTime = 20;
+      gameTime = 70;
+      flipeDuration = 1500;
       break;
     case "hard":
-      gameTime = 10;
+      gameTime = 60;
+      flipeDuration = 1000;
       break;
   }
-  updateLocalDifficulty();
 }
-

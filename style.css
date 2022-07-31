@@ -92,6 +92,14 @@ components
   font-size: 1.2rem;
   z-index: 2;
 }
+@media (max-width: 767px) {
+  .game .info .timer {
+    right: unset;
+    left: 0;
+    top: 15px;
+    transform: translateX(50%);
+  }
+}
 .game .game-body {
   --card-width: 200px;
   display: grid;
@@ -221,7 +229,7 @@ components
   transform: translate(-100%, -50%);
 
   border-radius: 5px;
-  background-color:white;
+  background-color: white;
   color: black;
   transition: var(--state-change-duration);
   padding: 20px 0;
@@ -251,11 +259,11 @@ components
   margin-bottom: 5px;
   color: black;
 }
-.settings .sounds .sound-setting:first-child{
+.settings .sounds .sound-setting:first-child {
   padding-top: 0;
 }
-.settings .sounds .sound-setting.no-sound{
-  opacity: .5;
+.settings .sounds .sound-setting.no-sound {
+  opacity: 0.5;
 }
 .settings .sounds .sound-setting::before {
   transition: var(--state-change-duration) ease-out;
@@ -282,9 +290,9 @@ components
     opacity: 0;
   }
   .settings .sounds .sound-setting:hover {
-    opacity: .5;
+    opacity: 0.5;
   }
-  .settings .sounds .sound-setting.no-sound:hover{
+  .settings .sounds .sound-setting.no-sound:hover {
     opacity: 1;
   }
 }
@@ -337,8 +345,8 @@ components
   pointer-events: all;
   transition: var(--move-duration) transform;
 }
-.set-control .open:hover{
-  opacity: .5
+.set-control .open:hover {
+  opacity: 0.5;
 }
 .settings.active .set-control .open {
   opacity: 0;
@@ -373,5 +381,12 @@ select.difficulty-level {
   right: -45px;
   top: 0px;
   cursor: pointer;
+}
+@media (max-width: 768px) {
+  .finish-game {
+    width: 30px;
+    right: -5px;
+    top: -35px;
+  }
 }
 /* create a user account styling */

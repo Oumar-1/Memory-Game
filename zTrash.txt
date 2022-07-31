@@ -1,0 +1,24 @@
+ <svg
+              viewBox="0 0 185.208 185.208"
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                id="close-icon"
+                stroke-width="10"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-miterlimit="6.2"
+              >
+                <path
+                  d="M-718.44-567.742h116.03v175.953h-116.03z"
+                  transform="translate(782.988 572.372)"
+                />
+                <path
+                  d="M-778.292-479.768 h132.043m-.001 0-38.888 38.052m38.888-38.052-38.888-38.05"
+                  style="stroke-miterlimit: 4"
+                  transform="translate(782.988 572.372)"
+                />
+              </g>
